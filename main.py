@@ -5,13 +5,20 @@ from bs4 import BeautifulSoup
 app = Flask(__name__)
 
 def scrape_similarweb(domain):
-    """Función para extraer datos de SimilarWeb usando requests en vez de Playwright"""
+    """Función mejorada para extraer datos de SimilarWeb sin ser bloqueado."""
     url = f"https://www.similarweb.com/website/{domain}/"
+    
     headers = {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+        "Accept-Language": "es-ES,es;q=0.9",
+        "Accept-Encoding": "gzip, deflate, br",
+        "Referer": "https://www.google.com/",
+        "DNT": "1",
+        "Connection": "keep-alive"
     }
 
-    response = requests.get(url, headers=headers)
+    session = requests.Session()
+    response = session.get(url, headers=headers)
 
     if response.status_code != 200:
         return {"error": f"No se pudo acceder a SimilarWeb (status {response.status_code})"}
